@@ -14,6 +14,8 @@ import { useInterval } from './hooks/useInterval';
 import { COLS, ROWS } from './constants';
 
 export default function App() {
+  console.log('App init');
+
   const [dropTime, setDropTime] = useState<number | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
