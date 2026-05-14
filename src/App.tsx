@@ -54,10 +54,18 @@ export default function App() {
     setIsPaused(false);
     setGameStarted(true);
   }, [resetPlayer, setGrid, setLevel, setRows, setScore]);
-
+  /**
+   * 扫描并消除网格中已满的行，并在顶部补充空行以维持网格尺寸。
+   *
+   * @param newGrid - 当前游戏网格状态，二维数组表示。
+   * @returns 包含消除后的新网格和消除行数的对象。
+   *          - sweptGrid: 消除满行并补充空行后的网格。
+   *          - linesCleared: 被消除的行数。
+   */
   const sweepRows = useCallback((newGrid: any[][]) => {
     let linesCleared = 0;
-    // Find rows that are full
+
+    // 过滤掉所有填满的行，并统计消除的行数
     const filteredGrid = newGrid.filter(row => {
       const isFull = row.every(cell => cell !== 0);
       if (isFull) {
@@ -67,7 +75,7 @@ export default function App() {
       return true;
     });
 
-    // Add empty rows at the top for each cleared line
+    // 在网格顶部添加空行，使网格恢复到原始行数
     const sweptGrid = [...filteredGrid];
     while (sweptGrid.length < ROWS) {
       sweptGrid.unshift(new Array(COLS).fill(0));
@@ -76,6 +84,13 @@ export default function App() {
     return { sweptGrid, linesCleared };
   }, []);
 
+  /**
+   * 检测玩家是否与网格发生碰撞。
+   *
+   * @param {Object} player - 玩家对象。
+   * @param {Array} grid - 网格数组。
+   * @returns {boolean} - 如果玩家与网格发生碰撞，则返回 true，否则返回 false。
+   */
   const handleCollision = useCallback((player: any, grid: any[][]) => {
     const newGrid = grid.map(row => [...row]);
     player.tetromino.forEach((row, y: number) => {
